@@ -1,5 +1,5 @@
 import socket
-from client1 import parity_bit, parity_2d, crc16, hamming_code, internet_checksum
+from error_methods import *
 
 def client2():
     s = socket.socket()

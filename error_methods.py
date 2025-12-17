@@ -1,11 +1,7 @@
-import socket
 import binascii
-from error_methods import *
 
-
-
-# PARITY BIT
-def parity_bit(text, mode="even"):
+# PARITY BIT (EVEN)
+def parity_bit(text):
     binary = ''.join(format(ord(c), '08b') for c in text)
     ones = binary.count('1')
     return '0' if ones % 2 == 0 else '1'
@@ -43,7 +39,7 @@ def crc16(text):
     return format(crc, '04X')
 
 
-# HAMMING (used as checksum)
+# HAMMING (DETECTION ONLY)
 def hamming_code(text):
     encoded = ""
     for c in text:
@@ -70,33 +66,3 @@ def internet_checksum(text):
 
     checksum = ~checksum & 0xffff
     return format(checksum, '04X')
-
-
-# ================= CLIENT 1 =================
-
-def client1():
-    client = socket.socket()
-    client.connect(("localhost", 9999))
-
-    text = input("Enter message: ")
-    method = input("Choose method (PARITY, PARITY2D, CRC16, HAMMING, CHECKSUM): ").upper()
-
-    if method == "PARITY":
-        control = parity_bit(text)
-    elif method == "PARITY2D":
-        control = parity_2d(text)
-    elif method == "CRC16":
-        control = crc16(text)
-    elif method == "HAMMING":
-        control = hamming_code(text)
-    else:
-        control = internet_checksum(text)
-
-    packet = f"{text}|{method}|{control}"
-    client.send(packet.encode())
-    print("Packet sent:", packet)
-    client.close()
-
-
-if __name__ == "__main__":
-    client1()
